@@ -5,7 +5,8 @@ import os
 from statsmodels.tsa.arima.model import ARIMA
 
 app = Flask(__name__)
-CORS(app)  
+
+CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "OPTIONS"], "allow_headers": ["Content-Type"]}})
 
 data_path = os.path.join(os.getcwd(), 'data', 'cropPrices.csv')
 crop_prices = pd.read_csv(data_path)
