@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Price Volatility Prediction</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Price Volatility Prediction</h1>
+    
+    {% if predictions %}
+      <h2>Predicted Prices for {{ crop }} in {{ district }}, {{ state }}</h2>
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Predicted Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in predictions %}
+            <tr>
+              <td>{{ item.date }}</td>
+              <td>{{ item.predictedPrice }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% elif error %}
+      <div class="error-message">{{ error }}</div>
+    {% else %}
+      <p>No data available. Please provide inputs through the React application.</p>
+    {% endif %}
+  </div>
+</body>
+</html>
