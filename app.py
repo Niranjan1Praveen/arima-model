@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS  
 import pandas as pd
 import os
 from statsmodels.tsa.arima.model import ARIMA
 
 app = Flask(__name__)
+CORS(app)  
 
 data_path = os.path.join(os.getcwd(), 'data', 'cropPrices.csv')
 crop_prices = pd.read_csv(data_path)
