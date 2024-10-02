@@ -46,7 +46,7 @@ def predict_prices(filtered_data):
     except Exception as e:
         return {'error': str(e)}
 
-@app.route('/', methods=['POST'])
+@app.route('/', methods=['POST', 'GET'])
 def index():
     data = request.get_json()
     crop = data.get('crop', '').lower().strip()
