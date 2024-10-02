@@ -6,17 +6,7 @@ from statsmodels.tsa.arima.model import ARIMA
 
 app = Flask(__name__)
 
-CORS(app, resources={r"/*": {"origins": "*", "methods": "GET, POST, PUT, DELETE, OPTIONS"}})
-
-
-@app.before_request
-def handle_options():
-    if request.method == 'OPTIONS':
-        response = app.make_default_options_response()
-        headers = response.headers
-        headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
-        headers['Access-Control-Allow-Headers'] = request.headers.get('Access-Control-Request-Headers', '*')
-        return response
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Path to data
 data_path = os.path.join(os.getcwd(), 'data', 'cropPrices.csv')
@@ -46,7 +36,7 @@ def predict_prices(filtered_data):
     except Exception as e:
         return {'error': str(e)}
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/', methods=['POST'])
 def index():
     data = request.get_json()
     crop = data.get('crop', '').lower().strip()
@@ -65,14 +55,12 @@ def index():
     if filtered_data.empty:
         return jsonify({'error': 'No data available for the specified crop, state, and district'}), 404
 
-    # Predict prices
     predicted_prices = predict_prices(filtered_data)
 
     if 'error' in predicted_prices:
         return jsonify({'error': predicted_prices['error']}), 500
 
-    # Send results as JSON response
     return jsonify(predictions=predicted_prices)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
