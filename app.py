@@ -6,8 +6,19 @@ from statsmodels.tsa.arima.model import ARIMA
 
 app = Flask(__name__)
 
-CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
+CORS(app, resources={r"/*": {"origins": "*", "methods": "GET, POST, PUT, DELETE, OPTIONS"}})
 
+
+@app.before_request
+def handle_options():
+    if request.method == 'OPTIONS':
+        response = app.make_default_options_response()
+        headers = response.headers
+        headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+        headers['Access-Control-Allow-Headers'] = request.headers.get('Access-Control-Request-Headers', '*')
+        return response
+
+# Path to data
 data_path = os.path.join(os.getcwd(), 'data', 'cropPrices.csv')
 crop_prices = pd.read_csv(data_path)
 
